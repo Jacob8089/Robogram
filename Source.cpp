@@ -42,13 +42,16 @@ void print_script() {
 	//else { cout << "Wrong option entered"; }
 }
 
-void read_gcode(double unit) { //main compnent- gcode: A vector appended with gcodes
+void read_gcode(double unit) { //main thread- gcode: A vector appended with gcodes
 
 	double* unit_spec = &unit;
+	std::cout << "\nGCode to UR SCript conversion started ->->\n\n" << std::endl;
 	for (auto i = gcode.cbegin(); i != gcode.cend(); ++i) {
 		/*cout << *i << endl;*/
 		string cmd_line = *i; //each gcode line command
-		GCode_Converter(cmd_line, unit_spec);
+		std::string g_input_1 = cmd_line.substr(0, 1);
+		std::string g_input_2 = cmd_line.substr(1, 1);
+		if (g_input_1 == "G" &&(g_input_2 == "1"|| g_input_2 == "0")){ GCode_Converter(cmd_line, unit_spec); }
 		/*cout << input_1;*/}
 	cout << "\n" << gcode.size() << endl;
 	cout << gcode.capacity() << endl;
@@ -89,8 +92,9 @@ void set_unit(vector<string> gcmds)//setting the unit
 			}
 		}
 		else {
-			cout << "If you see the message no unit specifications found. Setting to default";
+			//cout << "If you see the message no unit specifications found. Setting to default";
 			//unit = 1000;
+			continue;
 		}
 
 	}

@@ -1,0 +1,18 @@
+Document last updated on 03/04/2023 at 22:00 CET
+
+**Release log on Robogram**
+
+
+Second Iteration(03/04/2023)-
+
+>[NEW] Printing the UR commands on console with blue dye and that for any exceptions it turns red.
+
+>[ISSUE] Writing the commands to the script file missing the rotation values.
+>[ISSUE] Computation time is cosidered to be more as a large GCode file is being parsed.
+
+---------------
+
+First Iteration(29/03/2023)
+>[NEW] Console based application that takes in GCode file and converting that to respective UR Script commands.
+
+>[ISSUE] Writing the commands missing the rotation values.

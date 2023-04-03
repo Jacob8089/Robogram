@@ -8,7 +8,8 @@ using namespace std;
 
 const float* GCode_Converter(std::string cmd_line, double* unit_spec)
 {
-    system("Color 0F");
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(h, 7);
     std::vector<std::string> movej;
     std::vector<std::string> movel_vals;
     std::vector<std::string> movel;
@@ -407,9 +408,13 @@ const float* GCode_Converter(std::string cmd_line, double* unit_spec)
                 }
             }}
         }
-        if (input_2 == "0") {  std::cout << "\nThe converted UR Command is-" << "\nmovej([" << psx << "," << psy << "," << psz << ",0,0,0" << "],accel_mss,speed_ms,0,0.000)" << std::endl; }
-        else if (input_2 == "1") { std::cout << "\nThe converted UR Script command is-" << "\nmovel([" << psx << "," << psy << "," << psz << ",0,0,0" << "],accel_mss,speed_ms,0,0.000)" << std::endl; }
-        else { std::cout << "\n[Critical]Not sure on what happened" << std::endl; }
+        if (input_2 == "0") {
+            SetConsoleTextAttribute(h, 3);  std::cout << "\nThe converted UR Command is-" << "\nmovej([" << psx << "," << psy << "," << psz << ",0,0,0" << "],accel_mss,speed_ms,0,0.000)" << std::endl; SetConsoleTextAttribute(h, 7);
+        }
+        else if (input_2 == "1") { SetConsoleTextAttribute(h, 3); std::cout << "\nThe converted UR Script command is-" << "\nmovel([" << psx << "," << psy << "," << psz << ",0,0,0" << "],accel_mss,speed_ms,0,0.000)" << std::endl; SetConsoleTextAttribute(h, 7);
+        }
+        else { SetConsoleTextAttribute(h, 4); std::cout << "\n[Critical]Not sure on what happened" << std::endl; SetConsoleTextAttribute(h, 7);
+        }
     }
     else { std::cout << "[Error]The entered code is not a GCode value" << std::endl; }//end of GCode
 
