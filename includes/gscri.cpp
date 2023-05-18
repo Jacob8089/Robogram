@@ -2,14 +2,21 @@
 #include<string>
 #include<vector>
 #include <cstring>
-#include<windows.h>  
-#include"conv_g.h"
-using namespace std;
+#include<windows.h> 
+#include<fstream>
+#include<filesystem>
 
-const float* GCode_Converter(std::string cmd_line, double* unit_spec)
+#include"gscri.h"
+using namespace std;
+namespace fs = std::filesystem;
+using std::filesystem::current_path;
+
+float GCode_Converter(std::string cmd_line, double* unit_spec)
 {
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(h, 7);
+    filesystem::path directoryPath = current_path();
+    string stringpath = directoryPath.generic_string();
     std::vector<std::string> movej;
     std::vector<std::string> movel_vals;
     std::vector<std::string> movel;
@@ -424,5 +431,9 @@ const float* GCode_Converter(std::string cmd_line, double* unit_spec)
     //std::cout << "Value for Y: " << psy << std::endl;
     //std::cout << "Value for Z: " << psz << std::endl;
     std::cout << "--------------------------" << std::endl;
-    return 0;
+    fstream Stat;
+    Stat.open(stringpath + "\\bin\\Robogram\\traj.txt", ios::app);
+    Stat << psx<<" "<<psy<<" "<<psz<<endl;
+    Stat.close();
+    return psx,psy,psz;
 }

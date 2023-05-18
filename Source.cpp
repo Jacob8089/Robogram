@@ -3,18 +3,29 @@
 #include<vector>
 #include<fstream>//file parser and writer
 #include<ctime>//time library
-#include"includes/conv_g.h"
-#include <stdlib.h>
-#include <windows.h>
+#include<stdlib.h>
+#include<windows.h>
+#include<cstring>
+#include<stdio.h>
+#include<filesystem>
+
+#include"includes/gscri.h"
+
+
 using namespace std;
+namespace fs = std::filesystem;
+using std::filesystem::current_path;
 
 std::vector<std::string> ur_script_batch1 = {};// global parameters
 std::vector<std::string> ur_script_batch2 = {};// tcp and first movej commands
-std::vector<std::string> ur_script_batch3 = {};// main kinametics commands-1
+std::vector<float> ur_script_batch3 = {};// main kinametics commands-1
 std::vector<std::string> ur_script_batch4 = {};// main kinametics commands-2
+double tcp_x, tcp_y, tcp_z, tcp_rx, tcp_ry, tcp_rz;
+
+filesystem::path directoryPath = current_path();
+string stringpath = directoryPath.generic_string();
 
 vector<string> gcode = {};// gcode resevior
-
 
 float global_paramters(float br) {
 	cout << "Value for blend radius added as  " << br << endl;;
@@ -23,35 +34,41 @@ float global_paramters(float br) {
 
 void print_script() {
 	string fn_name;
-	cout << "Enter the name of the program, this will be your file name also" << endl;
-	cin >> fn_name;
-	std::time_t result = std::time(nullptr);//time_collector
-	fstream UR_Script;
-	UR_Script.open("MDB_3D.script", ios::out);
-	UR_Script << "#Program created by Robogram v.1.0 for Mechtronics Design Build Project 1 at " << std::asctime(std::localtime(&result)) << endl;//writing starts
-	UR_Script << "#Core Program:" << endl;;
-	UR_Script << "def " << fn_name << "()" << endl;//UR_script
-	UR_Script << "end" << endl;
-	UR_Script << "*----------------------------" << endl;
-	UR_Script.close();
-	string option;
+	cout << ur_script_batch3.size() << endl;
+	//cout << "Enter the name of the program, this will be your file name also" << endl;
+	//cin >> fn_name;
+	//std::time_t result = std::time(nullptr);//time_collector
+	//fstream UR_Script;
+	//UR_Script.open("misc.txt", ios::out);
+	//for (auto i = 0; i <= ur_script_batch3.size() - 1; i=i+3) {
+	//	UR_Script <<ur_script_batch3.at(i) <<" " << ur_script_batch3.at(i + 1) << " " << ur_script_batch3.at(i + 2) << endl;
+	//}
+	//UR_Script << "*----------------------------" << endl;
+	//UR_Script.close();
+
+	fstream Stat;
+	Stat.open(stringpath + "\\bin\\Robogram\\stat.txt", ios::out);
+	Stat << "1";
+	Stat.close();
+
 	cout << "All operations complete." << endl;
-	//cin >> option;
-	//if (option == "Y" || option == "y") {}
-	//else if (option == "N" || option == "n") {}
-	//else { cout << "Wrong option entered"; }
 }
 
-void read_gcode(double unit) { //main thread- gcode: A vector appended with gcodes
+void read_gcode(double *unit) { //main thread- gcode: A vector appended with gcodes
 
-	double* unit_spec = &unit;
+	double* unit_spec = unit;
 	std::cout << "\nGCode to UR SCript conversion started ->->\n\n" << std::endl;
 	for (auto i = gcode.cbegin(); i != gcode.cend(); ++i) {
 		/*cout << *i << endl;*/
 		string cmd_line = *i; //each gcode line command
 		std::string g_input_1 = cmd_line.substr(0, 1);
 		std::string g_input_2 = cmd_line.substr(1, 1);
-		if (g_input_1 == "G" &&(g_input_2 == "1"|| g_input_2 == "0")){ GCode_Converter(cmd_line, unit_spec); }
+		if (g_input_1 == "G" && (g_input_2 == "1" || g_input_2 == "0")) { 
+			float x, y, z = 0.000000;
+			//x,y,z=GCode_Converter(cmd_line, unit_spec);
+			//cout<<x<<y<<endl;
+			ur_script_batch3.push_back(GCode_Converter(cmd_line, unit_spec)); 
+			ur_script_batch3.shrink_to_fit(); }
 		/*cout << input_1;*/}
 	cout << "\n" << gcode.size() << endl;
 	cout << gcode.capacity() << endl;
@@ -99,7 +116,22 @@ void set_unit(vector<string> gcmds)//setting the unit
 
 	}
 	cout << "Unit set to " << unit_name << endl;
-	read_gcode(unit);
+	read_gcode(&unit);
+}
+
+string read_file() {
+	fstream misc_file;
+	string file_line;
+	misc_file.open(stringpath+"\\bin\\Robogram\\misc.txt", ios::in);
+	if (misc_file.is_open()) {
+	getline(misc_file, file_line);
+	}
+	else { 
+		getline(misc_file, file_line); 
+		cout << "[Error] Misc file reading failed." << std::endl; }
+	misc_file.close();
+	cout << file_line << endl;
+	return file_line;
 }
 
 auto parse_gcode(string path) {    //main compnent- gcode: A vector appended with gcodes
@@ -130,16 +162,38 @@ auto parse_gcode(string path) {    //main compnent- gcode: A vector appended wit
 
 }
 
-int main() {
+float read_tcp(){}
+
+int main() {//driver 
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 	float blend_rad = 0.000000;
 	string file_path;
 	string file_name;
-	cout << "Welcome to Robogram SDK. Press Ctrl+C and Enter to exit the window." << endl;
-	cout << "\nEnter blend radius: ";
-	cin >> blend_rad;
-	cout << "\nEnter the GCode file path: ";
-	cin >> file_path;
+	SetConsoleTextAttribute(h, 7); std::cout<<"    ____                       _ " << std::endl;
+	std::cout << "   / __ \\____  _______________(_)" << std::endl;
+	std::cout << "  / /_/ / __ \\/ ___/ ___/ ___/ / " << std::endl;
+	std::cout << " / _, _/ /_/ (__  ) /__/ /  / /  " << std::endl;
+	std::cout << "/_/ |_|\\____/____/\\___/_/  /_/   " << std::endl;
+	cout << "\nWelcome to Roscri-Studio - Press Ctrl+C and Enter to exit the window." << endl;
+	cout << "========== University of Southern Denmark | Mechatronics Design Build 1 ==========" << endl;
+	cout << "----------------------------------------------------------------------------------" << endl;
+
+	//cout << "\nEnter blend radius: ";
+	//cin >> blend_rad;
+	//cout << "\nEnter the GCode file path: ";
+	//cin >> file_path;
 	//global_paramters(blend_rad);
+	//typeid().name()
+
+
+	cout << stringpath << endl;
+	Sleep(2000);
+	file_path = read_file();
+	cout << file_path << endl;
 	parse_gcode(file_path);
-	system("pause>0");
+
+	HWND myConsole = GetConsoleWindow(); //window handle
+	ShowWindow(myConsole, 0); //handle window
+
+	//system("PAUSE>0");
 }

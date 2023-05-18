@@ -1,2 +1,4 @@
 ﻿  Source.cpp
+C:\Users\jacob\Documents\C++\Robogram\Robogram\Source.cpp(66,13): warning C4101: 'y': unreferenced local variable
+C:\Users\jacob\Documents\C++\Robogram\Robogram\Source.cpp(66,10): warning C4101: 'x': unreferenced local variable
   Robogram.vcxproj -> C:\Users\jacob\Documents\C++\Robogram\Robogram\x64\Debug\Robogram.exe

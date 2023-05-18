@@ -1,18 +1,41 @@
-Document last updated on 03/04/2023 at 22:00 CET
+Document last updated on 29/04/2023 at 12:00 CET
 
-**Release log on Robogram**
+**Release log on Roscri**
 
-
-Second Iteration(03/04/2023)-
-
->[NEW] Printing the UR commands on console with blue dye and that for any exceptions it turns red.
-
->[ISSUE] Writing the commands to the script file missing the rotation values.
->[ISSUE] Computation time is cosidered to be more as a large GCode file is being parsed.
+Fourth Iteration(29/04/2023)-
+>[NEW] Prompts user to add new GCODE after each computation.
+>[NEW] Added pos & orientation based on DH matrix compuation.
 
 ---------------
 
-First Iteration(29/03/2023)
->[NEW] Console based application that takes in GCode file and converting that to respective UR Script commands.
+Third Iteration(18/04/2023)-
+>[NEW] Improved look to Console Application.
+>[NEW] Adding necessary details to readme file to explain on the application use in Github.
 
->[ISSUE] Writing the commands missing the rotation values.
+>[SOLVED] Console immediate crashing is now resolved. Alert on close_window event is enabled.
+
+>[ISSUE] Only one conversion iteration is possible. Needs to start application multiple times for each conversion.
+
+---------------
+
+Second Iteration(28/03/2023)-
+>[NEW] User is now able to convert G0 & G1 codes to its respective UR Script commands.
+>[NEW] By default unit is set to millimeters. Since no additional Gcodes are taken in rx, ry, rz are kept as zero.
+>[NEW] An exe(console based) for the team to understand how the GCODE conversion algorithm works in the project.
+>[NEW] By default unit is set to millimeters. User will be able to change the unit by switching G20 and G21 commands in the final application.
+
+>[SOLVED] If any of the coordinates is missing, iteration is now successfully completes which creates problem only if E or F is with G0/G1.
+
+>[ISSUE] User defined GCODE converion not yet added.
+>[ISSUE] Console closes immediately after the execuition where user is left with no results.
+>[ISSUE] Feed rate and Extrusion Speed is not enabled.
+>[ISSUE] Executable not able to install because of Windows Secuirity scan.
+
+---------------
+
+First Iteration(17/03/2023)
+>[NEW] A statis GCode was successfully converted to movel movej commands based on the GCode with fixed speed and accelaration.
+
+>[ISSUE] If any of the coordinates is missing, iteration failed which creates problem only if E or F is with G0/G1.
+
+
